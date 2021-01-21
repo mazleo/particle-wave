@@ -16,12 +16,10 @@ let windowHalfY = window.innerHeight / 2;
 
 let horizontalLines = [], verticalLines = [];
 
-let orange = 0xFFB04D;
-// let orangeFaded = 0x60343E; // 30%
-// let orangeFaded = 0x49233C; // 20%
-let orangeFaded = 0x3A1B33; // 15%
-// let orangeFaded = 0x32113B; // 10%
-let orangeFadedMaterial = new THREE.LineBasicMaterial({color: orangeFaded, linewidth: 1});
+// let orange = 0xFFB04D;
+// let orangeFadedMaterial = new THREE.LineBasicMaterial({color: orange, linewidth: 1, transparent: true, opacity: 0.15});
+let white = 0xFFFFFF;
+let whiteFadedMaterial = new THREE.LineBasicMaterial({color: white, linewidth: 1, transparent: true, opacity: 0.1});
 
 init();
 animate();
@@ -35,7 +33,6 @@ function init() {
     camera.position.y = 500;
 
     scene = new THREE.Scene();
-    // scene.background = new THREE.Color(0x1C0038);
 
     const numParticles = AMOUNTX * AMOUNTY;
 
@@ -66,13 +63,11 @@ function init() {
     geometry.setAttribute( 'scale', new THREE.BufferAttribute( scales, 1 ) );
 
     const material = new THREE.ShaderMaterial( {
-
         uniforms: {
-            color: { value: new THREE.Color( orange ) },
+            color: { value: new THREE.Color( white ) },
         },
         vertexShader: document.getElementById( 'vertexshader' ).textContent,
         fragmentShader: document.getElementById( 'fragmentshader' ).textContent
-
     } );
 
     particles = new THREE.Points( geometry, material );
@@ -89,6 +84,63 @@ function init() {
 
     window.addEventListener( 'resize', onWindowResize, false );
 
+}
+
+function initHorizontalLines() {
+    let positions = particles.geometry.attributes.position.array;
+
+    let distance = 3 * AMOUNTY;
+    for (let iy = 0; iy < AMOUNTY; iy++) {
+        let points = [];
+
+        let i = iy * 3;
+        for (let ix = 0; ix < AMOUNTX; ix++) {
+            let xv = positions[i];
+            let yv = positions[i + 1];
+            let zv = positions[i + 2];
+
+            points.push(new THREE.Vector3(xv, yv, zv));
+
+            i += distance;
+        }
+
+        let lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+        let line = new THREE.Line(lineGeo, whiteFadedMaterial);
+
+        horizontalLines.push(line);
+    }
+
+    for (let l = 0; l < horizontalLines.length; l++) {
+        scene.add(horizontalLines[l]);
+    }
+}
+
+function initVerticalLines() {
+    let positions = particles.geometry.attributes.position.array;
+
+    let i = 0;
+    for (let ix = 0; ix < AMOUNTX; ix++) {
+        let points = [];
+
+        for (let iy = 0; iy < AMOUNTY; iy++) {
+            let xv = positions[i];
+            let yv = positions[i + 1];
+            let zv = positions[i + 2];
+            
+            points.push(new THREE.Vector3(xv, yv, zv));
+
+            i += 3;
+        }
+
+        let lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+        let line = new THREE.Line(lineGeo, whiteFadedMaterial);
+
+        verticalLines.push(line);
+    }
+
+    for (let l = 0; l < verticalLines.length; l++) {
+        scene.add(verticalLines[l]);
+    }
 }
 
 function onWindowResize() {
@@ -122,6 +174,12 @@ function render() {
 
         for ( let iy = 0; iy < AMOUNTY; iy ++ ) {
 
+            // ix and iy represent a single particle
+            // count controls the speed of the waves
+            // the decimal num in the sine function controls "sharpness or cycling of the waves"
+            // the higher the number, the more the waves "cycle" in a shorter length
+            // the large integer outside the sine function controls the "height of the waves"
+            // the higher the number, the taller the waves
             positions[ i + 1 ] = ( Math.sin( ( ix + count ) * 0.37 ) * 150 ) +
                             ( Math.sin( ( iy + count ) * 0.3 ) * 150 );
 
@@ -144,62 +202,6 @@ function render() {
 
 }
 
-function initHorizontalLines() {
-    let positions = particles.geometry.attributes.position.array;
-
-    let distance = 3 * AMOUNTY;
-    for (let iy = 0; iy < AMOUNTY; iy++) {
-        let points = [];
-
-        let i = iy * 3;
-        for (let ix = 0; ix < AMOUNTX; ix++) {
-            let xv = positions[i];
-            let yv = positions[i + 1];
-            let zv = positions[i + 2];
-
-            points.push(new THREE.Vector3(xv, yv, zv));
-
-            i += distance;
-        }
-
-        let lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-        let line = new THREE.Line(lineGeo, orangeFadedMaterial);
-
-        horizontalLines.push(line);
-    }
-
-    for (let l = 0; l < horizontalLines.length; l++) {
-        scene.add(horizontalLines[l]);
-    }
-}
-
-function initVerticalLines() {
-    let positions = particles.geometry.attributes.position.array;
-
-    let i = 0;
-    for (let ix = 0; ix < AMOUNTX; ix++) {
-        let points = [];
-
-        for (let iy = 0; iy < AMOUNTY; iy++) {
-            let xv = positions[i];
-            let yv = positions[i + 1];
-            let zv = positions[i + 2];
-            
-            points.push(new THREE.Vector3(xv, yv, zv));
-
-            i += 3;
-        }
-
-        let lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-        let line = new THREE.Line(lineGeo, orangeFadedMaterial);
-
-        verticalLines.push(line);
-    }
-
-    for (let l = 0; l < verticalLines.length; l++) {
-        scene.add(verticalLines[l]);
-    }
-}
 
 function updateHorizontalLines() {
     let positions = particles.geometry.attributes.position.array;
