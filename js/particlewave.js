@@ -19,7 +19,7 @@ let horizontalLines = [], verticalLines = [];
 let orange = 0xFFB04D;
 // let orangeFaded = 0x60343E; // 30%
 // let orangeFaded = 0x49233C; // 20%
-let orangeFaded = 0x3E1A3B; // 15%
+let orangeFaded = 0x3A1B33; // 15%
 // let orangeFaded = 0x32113B; // 10%
 let orangeFadedMaterial = new THREE.LineBasicMaterial({color: orangeFaded, linewidth: 1});
 
@@ -35,7 +35,7 @@ function init() {
     camera.position.y = 500;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1C0038);
+    // scene.background = new THREE.Color(0x1C0038);
 
     const numParticles = AMOUNTX * AMOUNTY;
 
@@ -81,7 +81,7 @@ function init() {
     initHorizontalLines();
     initVerticalLines();
 
-    renderer = new THREE.WebGLRenderer( { antialias: true, canvas: canvas } );
+    renderer = new THREE.WebGLRenderer( { antialias: true, canvas: canvas, alpha: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
 
