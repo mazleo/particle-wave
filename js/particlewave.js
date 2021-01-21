@@ -67,7 +67,8 @@ function init() {
             color: { value: new THREE.Color( white ) },
         },
         vertexShader: document.getElementById( 'vertexshader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentshader' ).textContent
+        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+        transparent: true
     } );
 
     particles = new THREE.Points( geometry, material );
