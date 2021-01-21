@@ -19,7 +19,8 @@ let horizontalLines = [], verticalLines = [];
 let orange = 0xFFB04D;
 // let orangeFaded = 0x60343E; // 30%
 // let orangeFaded = 0x49233C; // 20%
-let orangeFaded = 0x32113B; // 10%
+let orangeFaded = 0x3E1A3B; // 15%
+// let orangeFaded = 0x32113B; // 10%
 let orangeFadedMaterial = new THREE.LineBasicMaterial({color: orangeFaded, linewidth: 1});
 
 init();
@@ -51,7 +52,7 @@ function init() {
             positions[ i + 1 ] = 0; // y
             positions[ i + 2 ] = iy * SEPARATION - ( ( AMOUNTY * SEPARATION ) / 2 ); // z
 
-            scales[ j ] = 1;
+            scales[ j ] = 30;
 
             i += 3;
             j ++;
@@ -114,7 +115,6 @@ function render() {
     camera.lookAt( scene.position );
 
     const positions = particles.geometry.attributes.position.array;
-    const scales = particles.geometry.attributes.scale.array;
 
     let i = 0, j = 0;
 
@@ -124,9 +124,6 @@ function render() {
 
             positions[ i + 1 ] = ( Math.sin( ( ix + count ) * 0.37 ) * 150 ) +
                             ( Math.sin( ( iy + count ) * 0.3 ) * 150 );
-
-            scales[ j ] = ( Math.sin( ( ix + count ) * 0.3 ) + 1 ) * 20 +
-                            ( Math.sin( ( iy + count ) * 0.5 ) + 1 ) * 20;
 
             i += 3;
             j ++;
